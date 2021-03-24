@@ -13,7 +13,7 @@
       </a>
 
       <a
-        href="https://www.creative-tim.com/product/vue-material-dashboard"
+        href=""
         target="_blank"
         class="simple-text logo-normal"
       >
@@ -47,7 +47,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "Vue MD"
+      default: "EDC-Monitor"
     },
     sidebarBackgroundImage: {
       type: String,
