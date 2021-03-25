@@ -27,7 +27,8 @@ var db = mysql.createConnection({
   port:3306,
   user: 'root',
   password: 'vb-mysqldb',
-  database: 'edc_monitor'
+  database: 'edc_monitor',
+  multipleStatements: true
 })
 db.connect(function(err) {
   if (err) throw err;
@@ -102,18 +103,20 @@ client.on('message', (topic, message) => {
       .catch(function(err){
         console.log("Promise rejection error: "+err);
       })
-
+      break;
     case 'edc-monitor/setActive':
-      handleDeactivateAll()
+    //handlesetActive(message.toString()).then(function(results1){var m=results1[0]}).catch(function(err){console.log('err',err)});    
+    handleDeactivateAll()
       .then(function(results){
-        var strData=JSON.stringify(results[0])
+       /// var strData=JSON.stringify(results[0])
         // client.publish('edc-monitor/activePlayer', strData)
-        handlesetActive(message).then(function(results){var m=""}).catch(function(err){console.log(err)});
-        
+        // handlesetActive(message).then(function(results){var m=""}).catch(function(err){console.log(err)});
+        handlesetActive(message.toString()).then(function(results1){var m=""}).catch(function(err){console.log(err)});  
       })
       .catch(function(err){
         console.log("Promise rejection error: "+err);
       })
+      break;
       // client.publish('garage/close', 'Closing;'+message)
       // return handleGarageState(message)
     case 'edc-monitor/createNew':
@@ -129,6 +132,7 @@ client.on('message', (topic, message) => {
       .catch(function(err){
         console.log("Promise rejection error: "+err);
       })
+      break;
 
     case 'edc-monitor/updatePlayer':
       var dataD=message.toString()
@@ -143,6 +147,7 @@ client.on('message', (topic, message) => {
       .catch(function(err){
         console.log("Promise rejection error: "+err);
       })
+      break;
   }
   //console.log('No handler for topic %s', topic)
 })
@@ -164,26 +169,28 @@ client.on('message', (topic, message) => {
 function handleDeactivateAll(){
   return new Promise(function(resolve, reject){
     db.query(
-      `UPDATE data SET ActiveStatus='0' WHERE ActiveStatus='1'`, 
+      `UPDATE data SET ActiveStatus='0'`, 
         function(err, rows){                                                
-            if(rows === undefined){
-                reject(new Error("Error rows is undefined"));
-            }else{
-                resolve(rows);
-            }
+              resolve(rows);
+            // if(rows === undefined){
+            //     reject(new Error("Error rows is undefined"));
+            // }else{
+            //     resolve(rows);
+            // }
         }
     )}  
 )}
 function handlesetActive(playerID){
   return new Promise(function(resolve, reject){
     db.query(
-      `UPDATE data SET ActiveStatus='1' WHERE PlayerID='`+playerID+`'`, 
+      `UPDATE data SET ActiveStatus='0' ; UPDATE data SET ActiveStatus='1' WHERE PlayerID='`+playerID+`'`, 
         function(err, rows){                                                
-            if(rows === undefined){
-                reject(new Error("Error rows is undefined"));
-            }else{
-                resolve(rows);
-            }
+            resolve(rows);
+            // if(rows === undefined){
+            //     reject(new Error("Error rows is undefined"));
+            // }else{
+            //     resolve(rows);
+            // }
         }
     )}  
 )}
