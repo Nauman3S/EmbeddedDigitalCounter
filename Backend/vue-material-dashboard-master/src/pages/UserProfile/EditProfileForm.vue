@@ -10,8 +10,8 @@
         <div class="md-layout">
           <div class="md-layout-item md-small-size-100 md-size-33">
             <md-field>
-              <label>Company (disabled)</label>
-              <md-input v-model="disabled" disabled></md-input>
+              <label>Company</label>
+              <md-input v-model="company" ></md-input>
             </md-field>
           </div>
           <div class="md-layout-item md-small-size-100 md-size-33">
@@ -40,7 +40,7 @@
           </div>
           <div class="md-layout-item md-small-size-100 md-size-100">
             <md-field>
-              <label>Adress</label>
+              <label>Address</label>
               <md-input v-model="address" type="text"></md-input>
             </md-field>
           </div>
@@ -69,7 +69,8 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100 text-right">
-            <md-button class="md-raised md-success">Update Profile</md-button>
+            <!-- <md-button class="md-raised md-success" @click="UpdateUser">Update Profile</md-button> -->
+            <button  @click="UpdateUser">Update Profile</button>
           </div>
         </div>
       </md-card-content>
@@ -77,6 +78,7 @@
   </form>
 </template>
 <script>
+const API_URL = "http://edc-backend.production.wrapdrive.tech/v1/getUser";
 export default {
   name: "edit-profile-form",
   props: {
@@ -88,8 +90,8 @@ export default {
   data() {
     return {
       username: null,
-      disabled: null,
-      emailadress: null,
+      company: null,
+      emailadress: '0',
       lastname: null,
       firstname: null,
       address: null,
@@ -97,9 +99,47 @@ export default {
       country: null,
       code: null,
       aboutme:
-        "Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
+        "Nothing special"
     };
-  }
+  },
+  methods:{
+  UpdateUser(){
+    console.log('updating')
+    const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: this.username, company:this.company,email:this.emailadress,lastname:this.lastname,firstname:this.firstname,
+                           address:this.address,city:this.city,country:this.country,postalcode:this.code,aboutme:this.aboutme   
+    })
+  };
+  fetch("http://edc-backend.production.wrapdrive.tech/v1/updateUser", requestOptions)
+    .then(response => response.json())
+    .then();//data => (this.postId = data.id)
+
+  },
+  },
+mounted(){
+    fetch(API_URL)
+       fetch(API_URL)
+      .then(response => response.json())
+      .then(result => {
+        
+        this.username =''+ result['data'][0].username,
+        this.emailadress = result['data'][0].email
+        this.company = result['data'][0].company
+        this.lastname=result['data'][0].lastname
+        this.firstname=result['data'][0].firstname
+        this.address=result['data'][0].address
+        this.city=result['data'][0].city
+        this.country=result['data'][0].country
+        this.aboutme=result['data'][0].aboutme
+        this.code=result['data'][0].postalcode
+
+        //JSON.parse(result['data'])
+
+      });
+  },
+  
 };
 </script>
 <style></style>

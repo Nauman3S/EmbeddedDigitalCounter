@@ -2,12 +2,37 @@ import express from 'express';
 import { indexPage } from '../controllers';
 import { cashHandlePage } from '../controllers';
 import mysql from 'mysql'
+//import helmet from 'helmet'
+//import 'axios'
 //import MqttHandler from './mqtt_handler'
 import mqtt from 'mqtt';
+import cors from 'cors';
+//import axios from 'axios';
+
+// const app=express();
+// app.use(helmet())
+// app.use(helmet.permittedCrossDomainPolicies({
+//       permittedPolicies : "all",
+
+// }));
+// app.use(cors({credentials:true , origin:true}))
+// app.use(function(req,res,next){
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+// })
 const indexRouter = express.Router();
+//const indexRouter = app;
 const cashHandleRouter = express.Router();
+//indexRouter.locals.axios=axios;
+//axios.defaults.headers.common['Access-Control-Allow-Origin']='*';
+// indexRouter.use(cors());
 
+//   indexRouter.use(function(req,res,next){
+//     res.header("Access-Control-Allow-Origin",'*');
+//     res.header("Access-Control-Allow-Headers",'Origin, X-Requested-With, Content-Type, Accept');
 
+// })
 //const mqtt = require('mqtt')
 const client = mqtt.connect('mqtt://broker.hivemq.com')
 
@@ -65,7 +90,44 @@ indexRouter.get('/getActive', function(req, res) {
   })
 });
 
+indexRouter.get('/getUser', function(req, res) {
+  let sql = `SELECT * FROM user`;
+  db.query(sql, function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      data,
+      message: "User lists retrieved successfully"
+    })
+  })
+});
 
+
+indexRouter.post('/updateUser',cors(), function(req, res) {
+  //console.log(req);
+  let values = [
+    req.body.company,
+    req.body.username,
+    req.body.email,
+    req.body.firstname,
+    req.body.lastname,
+    req.body.address,
+    req.body.city,
+    req.body.country,
+    req.body.postalcode,
+    req.body.aboutme
+    
+  ];
+  let sql = `UPDATE user SET company='`+values[0]+`', username='`+values[1]+`', email='`+values[2]+`', firstname='`+values[3]+`', lastname='`+values[4]+`', address='`+values[5]+`', city='`+values[6]+`', country='`+values[7]+`', postalcode='`+values[8]+`', aboutme='`+values[9]+`'`;
+  
+  db.query(sql, [values], function(err, data, fields) {
+    if (err) throw err;
+    res.json({
+      status: 200,
+      message: "User Updated"
+    })
+  })
+});
 
 indexRouter.post('/addPlayer', function(req, res) {
   let sql = `INSERT INTO data(Timestamp, PlayerID, TMIN30, TMOUT30, TMIND, TMOUTD, ActiveStatus) VALUES (?)`;

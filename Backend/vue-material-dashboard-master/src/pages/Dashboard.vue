@@ -288,9 +288,9 @@ fetch(API_URL)
     this.$nextTick(function () {
             window.setInterval(() => {
                 this.getData();
-            },1000);
+            },2000);
         })
-   this.getData()
+  //  / this.getData()
   }
 };
 </script>

@@ -69,7 +69,7 @@ fetch(API_URL)
         
         this.allData = result['data']
         this.users=this.allData
-        console.clear()
+        //console.clear()
         
       //  console.log(this.allData)
         //JSON.parse(result['data'])
@@ -81,9 +81,9 @@ fetch(API_URL)
     this.$nextTick(function () {
             window.setInterval(() => {
                 this.getData();
-            },1000);
+            },2000);
         })
-    this.getData()
+    // this.getData()
   }
 };
 </script>
