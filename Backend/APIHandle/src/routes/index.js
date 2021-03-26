@@ -62,10 +62,10 @@ db.connect(function(err) {
 
 
 
-indexRouter.get('/', indexPage);
-indexRouter.get('/csh', cashHandlePage);
+indexRouter.get('/', cors(), indexPage);
+indexRouter.get('/csh', cors(), cashHandlePage);
 
-indexRouter.get('/listAll', function(req, res) {
+indexRouter.get('/listAll', cors(),function(req, res) {
   
   let sql = `SELECT * FROM data`;
   db.query(sql, function(err, data, fields) {
@@ -78,7 +78,7 @@ indexRouter.get('/listAll', function(req, res) {
   })
 });
 
-indexRouter.get('/getActive', function(req, res) {
+indexRouter.get('/getActive', cors(),function(req, res) {
   let sql = `SELECT * FROM data WHERE ActiveStatus='1'`;
   db.query(sql, function(err, data, fields) {
     if (err) throw err;
@@ -90,7 +90,7 @@ indexRouter.get('/getActive', function(req, res) {
   })
 });
 
-indexRouter.get('/getUser', function(req, res) {
+indexRouter.get('/getUser',cors(), function(req, res) {
   let sql = `SELECT * FROM user`;
   db.query(sql, function(err, data, fields) {
     if (err) throw err;
@@ -129,7 +129,7 @@ indexRouter.post('/updateUser',cors(), function(req, res) {
   })
 });
 
-indexRouter.post('/addPlayer', function(req, res) {
+indexRouter.post('/addPlayer', cors(),function(req, res) {
   let sql = `INSERT INTO data(Timestamp, PlayerID, TMIN30, TMOUT30, TMIND, TMOUTD, ActiveStatus) VALUES (?)`;
   let values = [
     req.body.Timestamp,
