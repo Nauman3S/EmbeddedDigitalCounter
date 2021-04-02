@@ -44,6 +44,7 @@ client.on('connect', () => {
   client.subscribe('edc-monitor/setActive')
   client.subscribe('edc-monitor/createNew')
   client.subscribe('edc-monitor/updatePlayer')
+  client.subscribe('edc-monitor/playerExists')
 })
 
 
@@ -181,6 +182,26 @@ client.on('message', (topic, message) => {
       break;
       // client.publish('garage/close', 'Closing;'+message)
       // return handleGarageState(message)
+    case 'edc-monitor/playerExists':
+      doesPlayerExists(message.toString())
+      .then(function(results){
+        var strData=JSON.stringify(results[0])
+        /// var strData=JSON.stringify(results[0])
+        if(typeof strData == 'undefined'){
+          client.publish('edc-monitor/playerExistance', 'null')  
+        }
+        else{
+        client.publish('edc-monitor/playerExistance', strData)
+        }
+         // client.publish('edc-monitor/activePlayer', strData)
+         // handlesetActive(message).then(function(results){var m=""}).catch(function(err){console.log(err)});
+         //handlesetActive(message.toString()).then(function(results1){var m=""}).catch(function(err){console.log(err)});  
+       })
+       .catch(function(err){
+         console.log("Promise rejection error: "+err);
+       })
+       break;
+      
     case 'edc-monitor/createNew':
       var dataD=message.toString()
       console.log(dataD)
@@ -218,6 +239,21 @@ client.on('message', (topic, message) => {
   return new Promise(function(resolve, reject){
     db.query(
       `SELECT * FROM data WHERE ActiveStatus='1'`, 
+        function(err, rows){                                                
+            if(rows === undefined){
+                reject(new Error("Error rows is undefined"));
+            }else{
+                resolve(rows);
+            }
+        }
+    )}
+)}
+
+
+function doesPlayerExists(PID){
+  return new Promise(function(resolve, reject){
+    db.query(
+      `SELECT * FROM data WHERE PlayerID='`+PID+`'`, 
         function(err, rows){                                                
             if(rows === undefined){
                 reject(new Error("Error rows is undefined"));

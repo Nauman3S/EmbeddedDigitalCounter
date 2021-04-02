@@ -10,6 +10,10 @@ int checked1 = false;
 int checked2 = false;
 
 
+void sendData(){
+  String data=String(CashInPulses)+String(';')+String(CashOutPulses);
+  Serial.println(data);
+}
 void count_cashIn_pulses()
 {
   int val = digitalRead(CashInPin);
@@ -32,9 +36,10 @@ void count_cashOut_pulses()
 int checkCashInPulse(){
     if (checked1) {
         checked1 = false;
-        Serial.println("CashInPulse Detected!");
-        Serial.print("CashInPulse Count: ");
-        Serial.println(CashInPulses);
+        // Serial.println("CashInPulse Detected!");
+        // Serial.print("CashInPulse Count: ");
+        //Serial.println(CashInPulses);
+        sendData();
         delay(500);
   }
 }
@@ -42,9 +47,10 @@ int checkCashInPulse(){
 int checkCashOutPulse(){
     if (checked2) {
         checked2 = false;
-        Serial.println("CashOutPulse Detected!");
-        Serial.print("CashOutPulse Count: ");
-        Serial.println(CashOutPin);
+        // Serial.println("CashOutPulse Detected!");
+        // Serial.print("CashOutPulse Count: ");
+        //Serial.println(CashOutPin);
+        sendData();
         delay(500);
   }
 }
