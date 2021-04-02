@@ -1,6 +1,15 @@
 import threading
 import time
 import paho.mqtt.client as mqtt
+# SDA <--> 24
+
+# SCK <--> 23
+# MOSI <--> 19
+# MISO <--> 21
+# IRQ <--> UNUSED
+# GND <--> 6
+# RST <--> 22
+# 3.3V <--> 1
 
 import json
 jstr='{"ID":6,"Timestamp":"1","PlayerID":"29","TMIN30":"/","TMOUT30":"2","TMIND":"/","TMOUTD":"2","ActiveStatus":"0"}'
